@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+body {
+  height: 100vh;
+  font-family: 'Space Mono';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} 
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+}
+
+[class^='square'] {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  border-right: none;
+  border-bottom: none;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+}
+
+[class^='square']:nth-of-type(3n) {
+  border-right: 1px solid black;
+}
+
+[class^='square']:nth-of-type(n + 7) {
+  border-bottom: 1px solid black;
+}
