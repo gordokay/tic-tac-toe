@@ -49,6 +49,12 @@ button {
   border: 1px solid black;
   box-shadow: -2px 2px black;
   transform: translateX(2px);
+  cursor: pointer;
+}
+
+button:active {
+  transform: translate(0, 2px);
+  box-shadow: none;
 }
 
 .reset {
@@ -71,6 +77,11 @@ button {
   align-items: center;
   justify-content: center;
   font-size: 2em;
+}
+
+[class^='square']:hover {
+  background-color: #E6F7DE;
+  cursor: pointer;
 }
 
 [class^='square']:nth-of-type(3n) {
