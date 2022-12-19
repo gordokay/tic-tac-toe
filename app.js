@@ -5,6 +5,7 @@
 
     let _currentPlayer;
     let _turns = 0;
+    let _hasWinner = false;
 
     const _checkWin = function(){
       const board = gameboard.getBoard();
@@ -27,6 +28,9 @@
     };
 
     const playRound = function(square) {
+      if(_hasWinner || _turns === 9) {
+        return;
+      }
       if(!_player1 || !_player2) {
         display.updateMessageContainer('please enter player names');
         return;
@@ -38,6 +42,7 @@
         if(_turns >= 5) {
           if(_checkWin()) {
             display.updateMessageContainer(`${_currentPlayer.name} won`);
+            _hasWinner = true;
             return;
           }
         }
@@ -58,14 +63,22 @@
       }
     }
 
-    return {playRound, setPlayer};
+    const resetGame = function() {
+      _player1 = null;
+      _player2 = null;
+      _turns = 0;
+      _hasWinner = false;
+    }
+
+    return {playRound, setPlayer, resetGame};
   })();
 
   const display = (function() {
     const boardContainer = document.querySelector('.board');
     const player1Input = document.querySelector('#player1');
     const player2Input = document.querySelector('#player2');
-    const startButton = document.querySelector('button');
+    const startButton = document.querySelector('.start');
+    const resetButton = document.querySelector('.reset');
     const messageContainer = document.querySelector('.message');
     const _squares = [];
 
@@ -83,14 +96,24 @@
       }
     };
 
+    const _resetDisplay = function() {
+      _squares.forEach(square => square.textContent = '');
+      gameboard.resetBoard();
+      ticTacToe.resetGame();
+      resetButton.style.display = 'none';
+      startButton.style.display = 'inline';
+      player1Input.value = '';
+      player2Input.value = '';
+      messageContainer.textContent = '';
+    }
+
     const _getPlayers = function() {
       if(player1Input.value && player2Input.value) {
         messageContainer.textContent = '';
         ticTacToe.setPlayer(player1Input.value, 'x');
         ticTacToe.setPlayer(player2Input.value, 'o');
-        player1Input.value = '';
-        player2Input.value = '';
-        startButton.removeEventListener('click', _getPlayers);
+        startButton.style.display = 'none';
+        resetButton.style.display = 'inline';
       } else {
         messageContainer.textContent = 'please enter player names';
       }
@@ -98,6 +121,7 @@
 
     const _bindEvents = function() {
       startButton.addEventListener('click', _getPlayers);
+      resetButton.addEventListener('click', _resetDisplay);
       _squares.forEach(square => {
         square.addEventListener('click', ticTacToe.playRound.bind(this, square));
       });
@@ -131,7 +155,13 @@
       return false;
     }; 
 
-    return {getBoard, updateBoard};
+    const resetBoard = function() {
+      for(let i = 0; i < 9; i++) {
+        _board[i] = null;
+      }
+    }
+
+    return {getBoard, updateBoard, resetBoard};
   })();
 
   function player(name, marker) {

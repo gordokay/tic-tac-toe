@@ -17,12 +17,17 @@ body {
   font-family: 'Space Mono';
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   justify-items: center;
 } 
 
+h1 {
+  grid-column: span 2;
+}
+
 .message {
   height: 1em;
+  grid-row: 2;
   grid-column: span 2;
 }
 
@@ -44,6 +49,10 @@ button {
   border: 1px solid black;
   box-shadow: -2px 2px black;
   transform: translateX(2px);
+}
+
+.reset {
+  display: none;
 }
 
 .board {
