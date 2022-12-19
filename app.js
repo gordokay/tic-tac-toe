@@ -51,6 +51,9 @@
           return;
         }
         _currentPlayer = (_currentPlayer === _player1) ? _player2 : _player1;
+        if(_currentPlayer.name === 'computer') {
+          computer.makeMove();
+        }
       }
     };
 
@@ -79,6 +82,7 @@
     const player2Input = document.querySelector('#player2');
     const startButton = document.querySelector('.start');
     const resetButton = document.querySelector('.reset');
+    const computerButton = document.querySelector('.computer');
     const messageContainer = document.querySelector('.message');
     const _squares = [];
 
@@ -102,6 +106,7 @@
       ticTacToe.resetGame();
       resetButton.style.display = 'none';
       startButton.style.display = 'inline';
+      computerButton.style.display = 'inline';
       player1Input.value = '';
       player2Input.value = '';
       messageContainer.textContent = '';
@@ -113,15 +118,28 @@
         ticTacToe.setPlayer(player1Input.value, 'x');
         ticTacToe.setPlayer(player2Input.value, 'o');
         startButton.style.display = 'none';
+        computerButton.style.display = 'none';
         resetButton.style.display = 'inline';
       } else {
         messageContainer.textContent = 'please enter player names';
       }
     }
 
+    const _setComputerPlayers = function() {
+      ticTacToe.setPlayer('human', 'x');
+      ticTacToe.setPlayer('computer', 'o');
+      player1Input.value = 'human';
+      player2Input.value = 'computer';
+      startButton.style.display = 'none';
+      computerButton.style.display = 'none';
+      resetButton.style.display = 'inline';
+      messageContainer.textContent = '';
+    }
+
     const _bindEvents = function() {
       startButton.addEventListener('click', _getPlayers);
       resetButton.addEventListener('click', _resetDisplay);
+      computerButton.addEventListener('click', _setComputerPlayers);
       _squares.forEach(square => {
         square.addEventListener('click', ticTacToe.playRound.bind(this, square));
       });
@@ -147,6 +165,17 @@
       return Array.from(_board);
     };
 
+    const getAvailableSquares = function() {
+      //returns array of indices of available squares
+      let availableSquares = [];
+      for(let i = 0; i < _board.length; i++){
+        if(!_board[i]) {
+          availableSquares.push(i);
+        }
+      }
+      return availableSquares;
+    }
+
     const updateBoard = function(square, marker) {
       if(!_board[square]) {
         _board[square] = marker;
@@ -161,7 +190,23 @@
       }
     }
 
-    return {getBoard, updateBoard, resetBoard};
+    return {getBoard, getAvailableSquares, updateBoard, resetBoard};
+  })();
+
+  const computer = (function() {
+    const _getRandomMove = function() {
+      const availableSquares = gameboard.getAvailableSquares();
+      const randomIndex = Math.floor(Math.random() * availableSquares.length);
+      return availableSquares[randomIndex];
+    };
+
+    const makeMove = function() {
+      setTimeout(() => {
+        ticTacToe.playRound(document.querySelector(`.square-${_getRandomMove()}`));
+      }, 500);
+    }
+
+    return {makeMove};
   })();
 
   function player(name, marker) {
