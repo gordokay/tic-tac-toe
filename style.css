@@ -10,14 +10,44 @@
 }
 
 body {
-  height: 100vh;
+  margin: 0 auto;
+  width: 50vw;
+  height: 75vh;
+  padding: 2em;
   font-family: 'Space Mono';
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  justify-items: center;
 } 
 
+.message {
+  height: 1em;
+  grid-column: span 2;
+}
+
+form {
+  margin-right: 2em;
+}
+
+label {
+  display: block;
+}
+
+input, button {
+  margin-bottom: 1em;
+}
+
+button {
+  padding: 0.25em 0.75em;
+  background-color: transparent;
+  border: 1px solid black;
+  box-shadow: -2px 2px black;
+  transform: translateX(2px);
+}
+
 .board {
+  height: fit-content;
   display: grid;
   grid-template-columns: repeat(3, auto);
 }

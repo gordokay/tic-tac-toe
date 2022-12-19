@@ -1,9 +1,9 @@
 (function() {
   const ticTacToe = (function() {
-    const _player1 = player('bink', 'x');
-    const _player2 = player('shrimp', 'o'); 
+    let _player1;
+    let _player2;
 
-    let _currentPlayer = _player1;
+    let _currentPlayer;
     let _turns = 0;
 
     const _checkWin = function(){
@@ -24,35 +24,56 @@
         return true;
       }
       return false;
-    }
+    };
+
     const playRound = function(square) {
+      if(!_player1 || !_player2) {
+        display.updateMessageContainer('please enter player names');
+        return;
+      }
       const index = square.className.match(/[0-9]/);
       if(gameboard.updateBoard(index, _currentPlayer.marker)) {
         display.updateSquare(square, _currentPlayer.marker);
         _turns++;
         if(_turns >= 5) {
           if(_checkWin()) {
-            console.log(`${_currentPlayer.name} won`);
+            display.updateMessageContainer(`${_currentPlayer.name} won`);
             return;
           }
         }
         if(_turns === 9) {
-          console.log('it\'s a draw');
+          display.updateMessageContainer('it\'s a draw');
           return;
         }
         _currentPlayer = (_currentPlayer === _player1) ? _player2 : _player1;
       }
+    };
+
+    const setPlayer = function(name, marker) {
+      if(marker === 'x') {
+        _player1 = player(name, marker);
+        _currentPlayer = _player1;
+      } else {
+        _player2 = player(name, marker);
+      }
     }
-    return {playRound};
+
+    return {playRound, setPlayer};
   })();
 
   const display = (function() {
     const boardContainer = document.querySelector('.board');
+    const player1Input = document.querySelector('#player1');
+    const player2Input = document.querySelector('#player2');
+    const startButton = document.querySelector('button');
+    const messageContainer = document.querySelector('.message');
     const _squares = [];
+
     const _init = function() {
       _makeGrid();
       _bindEvents();
-    }
+    };
+
     const _makeGrid = function() {
       for(let i = 0; i < 9; i++) {
         const square = document.createElement('div');
@@ -61,23 +82,47 @@
         _squares.push(square);
       }
     };
+
+    const _getPlayers = function() {
+      if(player1Input.value && player2Input.value) {
+        messageContainer.textContent = '';
+        ticTacToe.setPlayer(player1Input.value, 'x');
+        ticTacToe.setPlayer(player2Input.value, 'o');
+        player1Input.value = '';
+        player2Input.value = '';
+        startButton.removeEventListener('click', _getPlayers);
+      } else {
+        messageContainer.textContent = 'please enter player names';
+      }
+    }
+
     const _bindEvents = function() {
+      startButton.addEventListener('click', _getPlayers);
       _squares.forEach(square => {
         square.addEventListener('click', ticTacToe.playRound.bind(this, square));
       });
     };
+
     const updateSquare = function(square, marker) {
       square.textContent = marker;
     };
+
+    const updateMessageContainer = function(message) {
+      messageContainer.textContent = message;
+    }
+
     _init();
-    return {updateSquare};
+
+    return {updateSquare, updateMessageContainer};
   })();
 
   const gameboard = (function() {
     const _board = Array.from({length: 9});
+
     const getBoard = function() {
       return Array.from(_board);
     };
+
     const updateBoard = function(square, marker) {
       if(!_board[square]) {
         _board[square] = marker;
@@ -85,11 +130,11 @@
       }
       return false;
     }; 
+
     return {getBoard, updateBoard};
   })();
 
   function player(name, marker) {
     return {name, marker};
   }
-
 })();
