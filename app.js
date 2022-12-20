@@ -41,7 +41,7 @@
         _turns++;
         if(_turns >= 5) {
           if(_checkWin()) {
-            display.updateMessageContainer(`${_currentPlayer.name} won`);
+            display.updateMessageContainer(`${_currentPlayer.name.id ? _currentPlayer.name.id : _currentPlayer.name} won`);
             _hasWinner = true;
             return;
           }
@@ -51,7 +51,7 @@
           return;
         }
         _currentPlayer = (_currentPlayer === _player1) ? _player2 : _player1;
-        if(_currentPlayer.name === 'computer') {
+        if(_currentPlayer.name.id) {
           computer.makeMove();
         }
       }
@@ -106,7 +106,7 @@
       ticTacToe.resetGame();
       resetButton.style.display = 'none';
       startButton.style.display = 'inline';
-      computerButton.style.display = 'inline';
+      computerButton.style.visibility = 'visible';
       player1Input.value = '';
       player2Input.value = '';
       messageContainer.textContent = '';
@@ -118,7 +118,7 @@
         ticTacToe.setPlayer(player1Input.value, 'x');
         ticTacToe.setPlayer(player2Input.value, 'o');
         startButton.style.display = 'none';
-        computerButton.style.display = 'none';
+        computerButton.style.visibility = 'hidden';
         resetButton.style.display = 'inline';
       } else {
         messageContainer.textContent = 'please enter player names';
@@ -127,11 +127,11 @@
 
     const _setComputerPlayers = function() {
       ticTacToe.setPlayer('human', 'x');
-      ticTacToe.setPlayer('computer', 'o');
+      ticTacToe.setPlayer({id: 'computer'}, 'o');
       player1Input.value = 'human';
       player2Input.value = 'computer';
       startButton.style.display = 'none';
-      computerButton.style.display = 'none';
+      computerButton.style.visibility = 'hidden';
       resetButton.style.display = 'inline';
       messageContainer.textContent = '';
     }
