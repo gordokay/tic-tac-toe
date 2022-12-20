@@ -43,6 +43,10 @@ input, button {
   margin-bottom: 1em;
 }
 
+input {
+  padding-inline: 0.5em;
+}
+
 button {
   padding: 0.25em 0.75em;
   background-color: transparent;
